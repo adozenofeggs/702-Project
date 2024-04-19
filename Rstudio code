@@ -1,0 +1,10 @@
+> df <- heart %>% select(age, sex, cp, trestbps, chol, target)
+> heartdata <- heart
+> df <- heartdata %>% select(age, sex, cp, trestbps, chol, target)
+> df %>% ggplot(aes(x=age, fill=factor(target))) +
++     geom_density(alpha=0.5) +
++     geom_vline(xintercept=c(54, 70), color='red', linetype=2)
+> df %>% mutate(
++     sex = ifelse(sex==1, "Male", "Female")
++ )%>%ggplot(aes(x=sex, fill=factor(target))) +
++     geom_bar(position='dodge')
