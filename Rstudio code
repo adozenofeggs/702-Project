@@ -1,3 +1,11 @@
+#load libraries tidyverse, gridExtra, magrittr, and dplyr
+#import dataset
+heartdata <- read.csv("../input/heartdata/heart-corrected.csv", header = TRUE)
+#select variables
+df <- heartdata %>% select(age, sex, cp, trestbps, chol, target)
+dt <- heartdata %>% select(thalach, oldpeak)
+g1 <- df %>% ggplot(aes(x=age)) + geom_histogram(bins=50) # Age
+g1
 > df <- heart %>% select(age, sex, cp, trestbps, chol, target)
 > heartdata <- heart
 > df <- heartdata %>% select(age, sex, cp, trestbps, chol, target)
