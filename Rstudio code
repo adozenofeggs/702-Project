@@ -1,7 +1,308 @@
+```{r}
+
+#reading the dataset as a dataframe and storing it
+heart.data = read.csv("heart.csv")
+
+#analysing the dataset
+dim(heart.data)
+summary(heart.data)
+
+```
+```{r}
+na.omit(heart.data)#cleaning missing data from the dataframe
+head(heart.data)
+```
+
+
+```{r}
+
+#bar plots for analyzing frequency and distribution of variables
+for (col in names(heart.data)) {
+  # counting the frequency of unique values
+  freq = table(heart.data[[col]])
+  #bar plot
+  barplot(freq, main = paste("Frequency of", col), xlab = col, ylab = "Frequency", col = "red")
+}
+```
+```{r}
+str(heart.data)
+```
+```{r}
+#box plots
+#age vs target
+boxplot(heart.data$age ~ heart.data$target, 
+cex.lab=1.5, 
+main="age vs target", 
+xlab="target:0,1",
+ylab="age",
+col=c("purple","green"))
+
+#trestbps vs target
+boxplot(heart.data$trestbps ~ heart.data$target, 
+cex.lab=1.5, 
+main="trestbps vs target", 
+xlab="target:0,1",
+ylab="trestbps",
+col=c("purple","green"))
+
+#chol vs target
+boxplot(heart.data$chol ~ heart.data$target, 
+cex.lab=1.5, 
+main="chol vs target", 
+xlab="target:0,1",
+ylab="chol",
+col=c("purple","green"))
+
+#thalach vs target
+boxplot(heart.data$thalach ~ heart.data$target, 
+cex.lab=1.5, 
+main="thalach vs target", 
+xlab="target:0,1",
+ylab="thalach",
+col=c("purple","green"))
+
+#oldpeak vs target
+boxplot(heart.data$oldpeak ~ heart.data$target, 
+cex.lab=1.5, 
+main="oldpeak vs target", 
+xlab="target:0,1",
+ylab="oldpeak",
+col=c("purple","green"))
+```
+```{r}
+#pairplot
+target_colors = c("red", "green") 
+
+pairs(heart.data[, c(1,4,5,8,10)], #taking only numeric columns and using species column for coloring
+      main = "Pairplot for heart disease data",
+      pch = 2, 
+      col = target_colors[as.factor(heart.data$target)],
+      cex = 0.5, oma=c(2,2,5,10)) #adjusting the size and the legend
+
+par(mfrow = c(1, 1), mar = c(5, 5, 2, 2))
+legend("topright", legend = c("0", "1"), col = target_colors, pch = 2, title = "Target")
+```
+```{r}
+#correlation matrix and heatmap 
+heart.data_numeric = heart.data[, sapply(heart.data, is.numeric)] #using numeric values to find correlation
+
+correlation_matrix = cor(heart.data_numeric) #finding correlation matrix
+
+correlation_matrix
+
+#plotting heatmap
+heatmap(correlation_matrix, 
+        col = colorRampPalette(c("blue", "white", "red"))(50), 
+        scale = "none", 
+        symm = TRUE, 
+        main = "Correlation Heatmap of Heart Disease Dataset")
+
+#adjusting size and legend
+
+par(mfrow = c(2,3), mar = c(3,3,1,1))
+
+legend("bottomright", legend = c("Low", "Medium", "High"),
+       fill = colorRampPalette(c("blue", "white", "red"))(3),
+       bty = "n", title = "Correlation", horiz = TRUE,
+       x.intersp = 0.5, y.intersp = 0.5)
+
+```
+
+```{r}
+#bar plots for categorical variables
+library(ggplot2)
+#all variables used here were converted into factor as they are categorical variables
+
+#cp vs target
+heart.data$cp = factor(heart.data$cp)
+
+ggplot(heart.data, aes(x = cp, fill = factor(heart.data$target))) +
+  geom_bar() +
+  labs(title = "Bar Plot of chest pain colored by target",
+       x = "Values of cp",
+       y = "Count") +
+  scale_fill_manual(values = c("0" = "blue", "1" = "red")) 
+
+#fbs vs target
+heart.data$fbs = factor(heart.data$fbs)
+
+ggplot(heart.data, aes(x = fbs, fill = factor(heart.data$target))) +
+  geom_bar() +
+  labs(title = "Bar Plot of blood sugar level colored by target",
+       x = "Values of fbs",
+       y = "Count") +
+  scale_fill_manual(values = c("0" = "blue", "1" = "red")) 
+
+#exang vs target
+heart.data$exang = factor(heart.data$exang)
+
+ggplot(heart.data, aes(x = exang, fill = factor(heart.data$target))) +
+  geom_bar() +
+  labs(title = "Bar Plot of angina colored by target",
+       x = "Values of exang",
+       y = "Count") +
+  scale_fill_manual(values = c("0" = "blue", "1" = "red")) 
+
+#slope vs target
+heart.data$slope = factor(heart.data$slope)
+
+ggplot(heart.data, aes(x = slope, fill = factor(heart.data$target))) +
+  geom_bar() +
+  labs(title = "Bar Plot of slope colored by target",
+       x = "Values of slope",
+       y = "Count") +
+  scale_fill_manual(values = c("0" = "blue", "1" = "red")) 
+
+#ca vs target
+heart.data$ca = factor(heart.data$ca)
+
+ggplot(heart.data, aes(x = ca, fill = factor(heart.data$target))) +
+  geom_bar() +
+  labs(title = "Bar Plot of major vessels colored by target",
+       x = "Values of ca",
+       y = "Count") +
+  scale_fill_manual(values = c("0" = "blue", "1" = "red")) 
+
+#thal vs target 
+heart.data$thal = factor(heart.data$thal)
+
+ggplot(heart.data, aes(x = thal, fill = factor(heart.data$target))) +
+  geom_bar() +
+  labs(title = "Bar Plot of thalassemia colored by target",
+       x = "Values of thal",
+       y = "Count") +
+  scale_fill_manual(values = c("0" = "blue", "1" = "red")) 
+
+#sex vs target
+heart.data$sex = factor(heart.data$sex)
+
+ggplot(heart.data, aes(x = sex, fill = factor(heart.data$target))) +
+  geom_bar() +
+  labs(title = "Bar Plot of sex colored by target",
+       x = "Values of sex",
+       y = "Count") +
+  scale_fill_manual(values = c("0" = "blue", "1" = "red")) 
+
+```
+
+```{r}
+#PCA and PCA biplot
+heart.data_numeric = heart.data[, sapply(heart.data, is.numeric)]
+
+#performing PCA
+pca_result = prcomp(heart.data_numeric, scale. = TRUE)
+
+summary(pca_result)
+#biplot
+biplot(pca_result, scale = 0, cex = 0.7, cex.axis = 0.5, cex.lab = 1)
+```
+
+```{r}
+#scaling the variables to use them in logistic regression model as predictors
+heart.data$scaled_bp = scale(heart.data$trestbps)
+heart.data$scaled_chol = scale(heart.data$chol)
+heart.data$scaled_thalach = scale(heart.data$thalach)
+heart.data$scaled_age = scale(heart.data$age)
+heart.data$scaled_oldpeak = scale(heart.data$oldpeak)
+
+head(heart.data)
+```
+
+
+```{r}
+#first logistic regression model
+
+set.seed(123)  #for reproducibility
+train_indices = sample(1:nrow(heart.data), 0.67 * nrow(heart.data)) #67% data for training 
+train_data = heart.data[train_indices, ] #training set
+test_data = heart.data[-train_indices, ] #testing set
+
+#training in logistic regression model
+glm_model = glm(target ~ scaled_age + scaled_bp + scaled_chol + scaled_thalach + scaled_oldpeak, 
+                 data = train_data, 
+                 family = binomial) #all numeric values scaled and used
+
+
+#testing:
+#making predictions on the testing set
+glm_probs = predict(glm_model, test_data, type = "response")
+
+
+glm_pred = ifelse(glm_probs > 0.5, "1", "0")  # thresholding at 0.5
+
+#confusion matrix
+table(actual = test_data$target, predicted = glm_pred)
+
+mean(test_data$target== glm_pred) #72% correctly predicted.
+
+```
+```{r}
+#new logistic regression model with some new variables:
+##Adding chest pain data and restecg. Removed oldpeak value based on pca biplot result.
+
+set.seed(123)  #for reproducibility
+train_indices = sample(1:nrow(heart.data), 0.67 * nrow(heart.data)) #67% of data for training
+train_data = heart.data[train_indices, ]
+test_data = heart.data[-train_indices, ]
+
+#training in logistic regression model
+glm_model_cg = glm(target ~ scaled_age + scaled_bp + scaled_chol + scaled_thalach + restecg + cp, 
+                 data = train_data, 
+                 family = binomial) #cp(chest pain type) and ecg not scaled as they are categorical variables.
+
+
+#testing:
+#making predictions on the testing set
+glm_probs_cg = predict(glm_model_cg, test_data, type = "response")
+
+
+glm_pred_cg = ifelse(glm_probs_cg > 0.5, "1", "0")  # thresholding at 0.5
+
+#confusion matrix
+table(actual = test_data$target, predicted = glm_pred_cg)
+
+mean(test_data$target== glm_pred_cg) #76% correct prediction
+```
+```{r}
+#roc curve for first logistic regression model
+
+library(ROCR)
+prediction_obj = prediction(glm_probs, test_data$target)
+
+
+performance_obj= performance(prediction_obj, "tpr", "fpr")
+
+#ROC curve
+plot(performance_obj, main = "ROC Curve", col = "blue")
+
+#diagonal line for reference (random classifier)
+abline(a = 0, b = 1, lty = 2, col = "red")
+
+#AUC value added to the plot
+auc_value = performance(prediction_obj, "auc")@y.values[[1]]
+legend("bottomright", legend = paste("AUC =", round(auc_value, 2)), col = "black", lwd = 1, bty = "n")
+```
+```{r}
+#roc curve for new logistic regression model
+
+
+prediction_obj_cg = prediction(glm_probs_cg, test_data$target)
+
+
+performance_obj_cg = performance(prediction_obj_cg, "tpr", "fpr")
+
+
+plot(performance_obj_cg, main = "ROC Curve New", col = "blue")
+
+
+abline(a = 0, b = 1, lty = 2, col = "red")
+
+auc_value_cg = performance(prediction_obj_cg, "auc")@y.values[[1]]
+legend("bottomright", legend = paste("AUC =", round(auc_value_cg, 2)), col = "black", lwd = 1, bty = "n")
 #load libraries tidyverse, gridExtra, magrittr, and dplyr
 #import dataset
-heartdata <- read.csv("../input/heartdata/heart-corrected.csv", header = TRUE)
-#select variables
+
+#select variables for multivariate study
 df <- heartdata %>% select(age, sex, cp, trestbps, chol, target)
 dt <- heartdata %>% select(thalach, oldpeak)
 g1 <- df %>% ggplot(aes(x=age)) + geom_histogram(bins=50) # Age
